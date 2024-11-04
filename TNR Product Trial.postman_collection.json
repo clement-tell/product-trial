@@ -1,0 +1,597 @@
+{
+	"info": {
+		"_postman_id": "26ba30c2-f2e3-451c-bca5-e3a5f8526317",
+		"name": "TNR Product Trial",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29735627"
+	},
+	"item": [
+		{
+			"name": "Create Invalid Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const error = pm.response.json();\r",
+							"\r",
+							"pm.test(\"The 'inventoryStatus' field is present\", function () {\r",
+							"    pm.expect(error).to.have.property('inventoryStatus', \"La valeur doit être INSTOCK, LOWSTOCK ou OUTOFSTOCK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"The 'name' field is present\", function () {\r",
+							"    pm.expect(error).to.have.property('name', \"Le nom doit être renseigné\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"The 'price' field is present\", function () {\r",
+							"    pm.expect(error).to.have.property('price', \"Le prix doit être renseigné\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"description\": \"Product Description\",\r\n    \"image\": \"bamboo-watch.jpg\",\r\n    \"category\": \"Accessories\",\r\n    \"shellId\": 15,\r\n    \"internalReference\": \"REF-123-456\",\r\n    \"inventoryStatus\": \"INVALIDSTOCK\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products",
+					"host": [
+						"{{baseUrl}}products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Valid Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const product = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Verify created product\", function () {\r",
+							"    pm.expect(product).to.have.property('id');\r",
+							"    pm.expect(product.name).to.eql(\"Bamboo Watch\");\r",
+							"    pm.expect(product.description).to.eql(\"Product Description\");\r",
+							"    pm.expect(product.image).to.eql(\"bamboo-watch.jpg\");\r",
+							"    pm.expect(product.price).to.eql(65);\r",
+							"    pm.expect(product.category).to.eql(\"Accessories\");\r",
+							"    pm.expect(product.shellId).to.eql(15);\r",
+							"    pm.expect(product.internalReference).to.eql(\"REF-123-456\");\r",
+							"    pm.expect(product.inventoryStatus).to.eql(\"INSTOCK\");\r",
+							"    pm.expect(product).to.have.property('id');\r",
+							"    pm.expect(product).to.have.property('code');\r",
+							"    pm.expect(product).to.have.property('createdAt');\r",
+							"    pm.expect(product).to.not.have.property('updatedAt');\r",
+							"    pm.expect(product).to.not.have.property('rating');\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"product\", product);\r",
+							"pm.collectionVariables.set(\"productId\", product.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"name\": \"Bamboo Watch\",\r\n    \"description\": \"Product Description\",\r\n    \"image\": \"bamboo-watch.jpg\",\r\n    \"price\": 65,\r\n    \"category\": \"Accessories\",\r\n    \"shellId\": 15,\r\n    \"internalReference\": \"REF-123-456\",\r\n    \"inventoryStatus\": \"INSTOCK\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products",
+					"host": [
+						"{{baseUrl}}products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const product = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Verify product\", function () {\r",
+							"    pm.expect(product).to.eql(pm.collectionVariables.get(\"product\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products/{{productId}}",
+					"host": [
+						"{{baseUrl}}products"
+					],
+					"path": [
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Invalid Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const error = pm.response.json();\r",
+							"\r",
+							"pm.test(\"The 'inventoryStatus' field is present\", function () {\r",
+							"    pm.expect(error).to.have.property('inventoryStatus', \"La valeur doit être INSTOCK, LOWSTOCK ou OUTOFSTOCK\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Bamboo Watch\",\r\n    \"description\": \"Product Description\",\r\n    \"image\": \"bamboo-watch.jpg\",\r\n    \"price\": 65,\r\n    \"category\": \"Accessories\",\r\n    \"shellId\": 15,\r\n    \"inventoryStatus\": \"INVALIDSTOCK\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products/{{productId}}",
+					"host": [
+						"{{baseUrl}}products"
+					],
+					"path": [
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Not Found Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const error = pm.response.json();\r",
+							"\r",
+							"pm.test(\"The 'message' field is present\", function () {\r",
+							"    pm.expect(error).to.have.property('message', \"Le produit avec l'identifiant 2384203658 n'existe pas.\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"New Bamboo Watch\",\r\n    \"description\": \"New Product Description\",\r\n    \"image\": \"new-bamboo-watch.jpg\",\r\n    \"price\": 71,\r\n    \"category\": \"New Accessories\",\r\n    \"shellId\": 18,\r\n    \"inventoryStatus\": \"OUTOFSTOCK\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products/2384203658",
+					"host": [
+						"{{baseUrl}}products"
+					],
+					"path": [
+						"2384203658"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Valid Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const product = pm.response.json();\r",
+							"const oldProduct = pm.collectionVariables.get(\"product\");\r",
+							"\r",
+							"pm.test(\"Verify updated product\", function () {\r",
+							"    pm.expect(product.id).to.eql(oldProduct.id);\r",
+							"    pm.expect(product.code).to.eql(oldProduct.code);\r",
+							"    pm.expect(product.name).to.eql(\"New Bamboo Watch\");\r",
+							"    pm.expect(product.description).to.eql(\"New Product Description\");\r",
+							"    pm.expect(product.image).to.eql(\"new-bamboo-watch.jpg\");\r",
+							"    pm.expect(product.price).to.eql(71);\r",
+							"    pm.expect(product.category).to.eql(\"New Accessories\");\r",
+							"    pm.expect(product.shellId).to.eql(18);\r",
+							"    pm.expect(product.internalReference).to.eql(oldProduct.internalReference);\r",
+							"    pm.expect(product.inventoryStatus).to.eql(\"OUTOFSTOCK\");\r",
+							"    pm.expect(product.createdAt).to.eql(oldProduct.createdAt);\r",
+							"    pm.expect(product).to.have.property('updatedAt');\r",
+							"    pm.expect(product).to.not.have.property('rating');\r",
+							"    pm.expect(product).to.not.have.property('quantity');\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"product\", product);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"New Bamboo Watch\",\r\n    \"description\": \"New Product Description\",\r\n    \"image\": \"new-bamboo-watch.jpg\",\r\n    \"price\": 71,\r\n    \"category\": \"New Accessories\",\r\n    \"shellId\": 18,\r\n    \"inventoryStatus\": \"OUTOFSTOCK\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products/{{productId}}",
+					"host": [
+						"{{baseUrl}}products"
+					],
+					"path": [
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const products = pm.response.json();\r",
+							"const oldProduct = pm.collectionVariables.get(\"product\");\r",
+							"\r",
+							"pm.test(\"Response is an array\", function () {\r",
+							"    pm.expect(products).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"const product = products.find(product => product.id === pm.collectionVariables.get(\"product\").id);\r",
+							"\r",
+							"pm.test(\"Verify product\", function () {\r",
+							"    pm.expect(product.id).to.eql(oldProduct.id);\r",
+							"    pm.expect(product.code).to.eql(oldProduct.code);\r",
+							"    pm.expect(product.name).to.eql(\"New Bamboo Watch\");\r",
+							"    pm.expect(product.description).to.eql(\"New Product Description\");\r",
+							"    pm.expect(product.image).to.eql(\"new-bamboo-watch.jpg\");\r",
+							"    pm.expect(product.price).to.eql(71);\r",
+							"    pm.expect(product.category).to.eql(\"New Accessories\");\r",
+							"    pm.expect(product.shellId).to.eql(18);\r",
+							"    pm.expect(product.internalReference).to.eql(oldProduct.internalReference);\r",
+							"    pm.expect(product.inventoryStatus).to.eql(\"OUTOFSTOCK\");\r",
+							"    pm.expect(product.createdAt).to.eql(oldProduct.createdAt);\r",
+							"    pm.expect(product).to.have.property('updatedAt');\r",
+							"    pm.expect(product).to.not.have.property('rating');\r",
+							"    pm.expect(product).to.not.have.property('quantity');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products",
+					"host": [
+						"{{baseUrl}}products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Not Found Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const error = pm.response.json();\r",
+							"\r",
+							"pm.test(\"The 'message' field is present\", function () {\r",
+							"    pm.expect(error).to.have.property('message', \"Le produit avec l'identifiant 2384203658 n'existe pas.\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products/2384203658",
+					"host": [
+						"{{baseUrl}}products"
+					],
+					"path": [
+						"2384203658"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products/{{productId}}",
+					"host": [
+						"{{baseUrl}}products"
+					],
+					"path": [
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Not Found Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const error = pm.response.json();\r",
+							"\r",
+							"pm.test(\"The 'message' field is present\", function () {\r",
+							"    pm.expect(error).to.have.property('message', `Le produit avec l'identifiant ${pm.collectionVariables.get(\"productId\")} n'existe pas.`);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}products/{{productId}}",
+					"host": [
+						"{{baseUrl}}products"
+					],
+					"path": [
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/",
+			"type": "default"
+		},
+		{
+			"key": "product",
+			"value": ""
+		},
+		{
+			"key": "productId",
+			"value": ""
+		}
+	]
+}
