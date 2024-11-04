@@ -1,0 +1,34 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+<p-toolbar [style]="{ height: '100px' }">
+  <div class="p-toolbar-group-start">
+    <img ngSrc="assets/icons/alten.jpg" alt="logo" height="62" width="41" class="ml-2"/>
+  </div>
+  <div class="p-toolbar-group-center">
+    {{ title }}
+  </div>
+  <div class="p-toolbar-group-end" style="position: relative;">
+    <a routerLink="/cart" style="text-decoration: none; color: inherit;">
+      <i class="pi pi-shopping-cart" style="font-size: 2rem"></i>
+      <ng-container>
+        @if (cartService.getCartSize() > 0) {
+          <span class="notification-badge">{{ cartService.getCartSize() }}</span>
+        }
+      </ng-container>
+    </a>
+  </div>
+</p-toolbar>
+<p-splitter
+  [panelSizes]="[20, 80]"
+  [style]="{ height: 'calc(100vh - 100px)' }">
+  <ng-template pTemplate>
+    <div class="w-full">
+      <app-panel-menu />
+    </div>
+  </ng-template>
+  <ng-template pTemplate>
+    <div class="w-full app-content">
+      <router-outlet></router-outlet>
+    </div>
+  </ng-template>
+</p-splitter>

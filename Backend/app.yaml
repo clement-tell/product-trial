@@ -1,0 +1,5 @@
+service: default
+runtime: java21
+env: standard
+instance_class: F4
+env_variables:

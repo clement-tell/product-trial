@@ -1,0 +1,5 @@
+dispatch:
+  - url: "api.clement-tell-product-trial.com/*"
+    service: default
+  - url: "clement-tell-product-trial.com/*"
+    service: frontend

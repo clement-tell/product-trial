@@ -1,0 +1,32 @@
+<h1 class="text-center">Prendre contact</h1>
+
+<form #form="ngForm" (ngSubmit)="onSend()" class="flex flex-column justify-content-center p-card">
+  <div class="form-field">
+    <label for="email">Email</label>
+    <input pInputText
+           type="email"
+           id="email"
+           name="email"
+           [(ngModel)]="email"
+           required
+           email>
+  </div>
+  <div class="form-field">
+    <label for="description">Message</label>
+    <textarea pInputTextarea
+              id="description"
+              name="description"
+              rows="5"
+              cols="30"
+              [(ngModel)]="message"
+              required
+              maxlength="{{ maxLength }}">
+        </textarea>
+  </div>
+  <div class="character-count">
+    {{ remainingCharacters }} caractères restants
+  </div>
+  <div class="flex justify-content-center">
+    <p-button id="submit" type="submit" [disabled]="!form.valid" label="Envoyer" severity="success"/>
+  </div>
+</form>

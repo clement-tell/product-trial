@@ -1,0 +1,11 @@
+runtime: nodejs20
+service: frontend
+env: standard
+instance_class: F4
+
+handlers:
+  - url: /*
+    secure: always
+    script: auto
+
+entrypoint: node server.js

@@ -1,0 +1,81 @@
+<h1 class="text-center" *ngIf="isAdmin">Administration des produits</h1>
+<h1 class="text-center" *ngIf="!isAdmin">Liste des produits</h1>
+<div *ngIf="waitProductAPI" class="text-center">
+  <p-progressSpinner styleClass="mt-3" [style]="{'width': '50px', 'height': '50px'}"></p-progressSpinner>
+  <p>Chargement des produits...</p>
+</div>
+<p-button *ngIf="!waitProductAPI && isAdmin" label="Créer produit" (onClick)="onCreate()" class="block text-center mb-5"/>
+
+<div class="text-center mb-4" *ngIf="!waitProductAPI">
+  <p-dropdown
+    [options]="categories"
+    [(ngModel)]="selectedCategory"
+    placeholder="Filtrer par catégorie"
+    [showClear]="true"
+    (onChange)="updateCategory()">>
+  </p-dropdown>
+</div>
+
+<p-dataView *ngIf="!waitProductAPI" #dv [value]="paginatedProducts">
+  <ng-template pTemplate="list" let-products>
+    @for (product of products; track product) {
+      <p-card class="block mb-2">
+        <div class="flex align-items-start">
+          <img ngSrc="assets/icons/alten.jpg" alt="{{ product.name }}" style="width: 100px; height: auto; margin-right: 10px;"
+               height="885" width="591" priority/>
+          <div style="display: flex; flex-direction: column; gap: 5px">
+            <span class="font-medium text-secondary text-sm">{{ product.category }}</span>
+            <div class="text-lg font-medium text-900 mt-2">{{ product.name }}</div>
+            <div class="font-medium text-secondary text-sm">{{ product.price | currency: 'EUR':'symbol':'1.2-2':'fr-FR' }}</div>
+            <p-rating [(ngModel)]="product.rating" [cancel]="false" [stars]="5" [readonly]="true"></p-rating>
+            <span class="font-medium text-secondary text-sm">{{ product.description }}</span>
+          </div>
+        </div>
+        <ng-template pTemplate="footer">
+          <div class="flex gap-3 mt-1">
+            <p-button *ngIf="isAdmin" label="Modifier" severity="secondary" (onClick)="onUpdate(product)"/>
+            <p-button *ngIf="isAdmin" label="Supprimer" severity="danger" (onClick)="onDelete(product)"/>
+            <ng-container *ngIf="!isAdmin">
+              @if (cartService.isAlreadyInTheCart(product)) {
+                <p-inputNumber [(ngModel)]="product.quantity"
+                               [min]="0"
+                               [showButtons]="true"
+                               [step]="1"
+                               [max]="99"
+                               [inputStyle]="{ 'width': '60px' }"
+                               buttonLayout="horizontal"
+                               incrementButtonIcon="pi pi-plus"
+                               decrementButtonIcon="pi pi-minus"
+                               mode="decimal"
+                               ariaLabel="Quantité dans le panier"
+                (onInput)="cartService.updateProductQuantity(product)">
+                </p-inputNumber>
+                <p-button label="Supprimer du panier" severity="primary" (onClick)="cartService.removeFromCart(product)"/>
+              } @else {
+                <p-button label="Ajouter au panier" severity="primary" (onClick)="addToCart(product)"/>
+              }
+            </ng-container>
+          </div>
+        </ng-template>
+      </p-card>
+    }
+  </ng-template>
+</p-dataView>
+
+<div class="flex align-items-center justify-content-end mb-3" *ngIf="!waitProductAPI">
+  <span class="mx-1 text-color">Produits par page : </span>
+  <p-dropdown [options]="[{value: 5, label: 5}, {value: 10, label: 10}, {value: 15, label: 15}, {value: 20, label: 20}]" optionLabel="label" optionValue="value" [(ngModel)]="productsPerPage" (ngModelChange)="updateCategory()"/>
+  <p-paginator [rows]="productsPerPage" [totalRecords]="getFilteredProducts().length" (onPageChange)="onPageChange($event)" [showCurrentPageReport]="true" [first]="currentPage * productsPerPage"
+               currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
+</div>
+
+<p-dialog [(visible)]="isDialogVisible"
+    [style]="{ width: '50vw' }"
+    header="{{ isCreation ?  'Création' : 'Modification' }} d'un produit">
+    <app-product-form
+        [product]="editedProduct()"
+        [isCreation]="isCreation"
+        (save)="onSave($event)"
+        (cancel)="onCancel()"
+    />
+</p-dialog>
