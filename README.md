@@ -1,11 +1,12 @@
 # Backend
-- Base de données : MongoDB (nécesssite un serveur MongoDB pour executer en local l'application).
-- Les controllers, services et entities sont testés à 100%.
+- Base de données : MongoDB (nécessite un serveur MongoDB pour executer en local l'application).
+- Les contrôleurs, services et entités sont testés à 100%.
 - Tout est documenté avec des Javadocs.
 
 # Frontend
 - La partie admin n'est pas sécurisée, il aurait fallu par exemple utiliser Spring Security mais je n'ai pas eu le temps.
-- Uniquement la prtie Contact est testée.
+- Uniquement la partie Contact est testée.
+- <span style="color: red;">Après réflexion il aurait fallu mettre le filtre et la page des produits affichés en argument d'URL car pour l'instant à chaque mise à jour (création, modification, suppression) la page se recharge sans filtre et revient à la page 0</span>
 
 # Comportement des APIs
 |                   | Consultation | Création | Modification |
@@ -29,7 +30,7 @@
 
 - `id` est défini comment étant incrémentable lors de la création.
 - `code` est généré aléatoirement lors de la création.
-- `internalReference` est renseignée lors de la création et n'est plus modifiable ensuite. (Après vérification il aurait fallu le rendre obligatoire à la création).
+- `internalReference` est renseignée lors de la création et n'est plus modifiable ensuite. (Après réflexion il aurait fallu le rendre obligatoire à la création).
 - `name` et `price` sont obligatoires à la création.
 - `inventoryStatus` doit être soit "INSTOCK", "LOWSTOCK" ou "OUTOFSTOCK".
 - `createdAt` est généré lors de la création.
